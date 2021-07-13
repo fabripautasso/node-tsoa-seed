@@ -1,0 +1,117 @@
+{
+  "name": "tsoa-seed",
+  "version": "0.0.1",
+  "description": "API backend based on tsoa",
+  "main": "",
+  "engines": {
+    "node": ">=8.11.0",
+    "yarn": ">=1.7.0"
+  },
+  "pre-commit": [],
+  "scripts": {
+    "test": "yarn lint && yarn test:unit",
+    "test:unit": "yarn env:test nyc mocha --timeout 10000 -r ts-node/register ./src/tests/unit/**/*.spec.ts --exit",
+    "test:coverage": "yarn test:unit && google-chrome ./coverage/index.html",
+    "start": "yarn start:dev",
+    "start:local": "yarn build:tsoa && yarn env:local ts-node-dev --respawn ./src",
+    "start:dev": "yarn build:tsoa && yarn env:dev node -r ts-node/register ./src/index.ts",
+    "build": "yarn build:prod",
+    "build:routes": "tsoa routes",
+    "build:spec": "tsoa spec --basePath /service",
+    "build:tsoa": "yarn clean && yarn build:routes && yarn build:spec",
+    "build:prod": "yarn build:tsoa && tsc && yarn copy",
+    "lint": "tslint -c \"./tslint.json\" -p \"./tsconfig.json\"",
+    "clean": "rm -rf ./dist && rm -rf ./build && mkdir build",
+    "copy": "yarn copy:swagger && yarn copy:env",
+    "copy:swagger": "cp -R ./build/swagger ./dist/build/swagger",
+    "copy:env": "cp -R ./src/config/env ./dist/src/config/env",
+    "env:local": "cross-env NODE_ENV=local",
+    "env:dev": "cross-env NODE_ENV=development",
+    "env:test": "cross-env NODE_ENV=test",
+    "heroku-postbuild": "yarn build:tsoa && tsc"
+  },
+  "author": "Fabricio Pautasso",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^12.0.2",
+    "aws-sdk": "^2.217.1",
+    "cross-env": "^5.1.4",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "inversify": "^4.11.1",
+    "inversify-binding-decorators": "^3.2.0",
+    "lodash": "^4.17.13",
+    "morgan": "^1.9.0",
+    "multer": "^1.3.0",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "pg-mem": "^1.9.11",
+    "reflect-metadata": "^0.1.12",
+    "request-promise": "^4.2.2",
+    "sinon": "^4.5.0",
+    "swagger-ui-express": "^3.0.6",
+    "ts-mockito": "^2.3.1",
+    "ts-node": "^5.0.1",
+    "ts-node-dev": "^1.0.0-pre.18",
+    "tsoa": "3.8.0",
+    "typeorm": "0.2.29",
+    "typeorm-test-transactions": "^1.14.2",
+    "typescript": "^4.3.5",
+    "umzug": "^2.1.0",
+    "uuid": "^3.2.1",
+    "winston": "^3.0.0-rc4"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/chai": "^4.1.2",
+    "@types/colors": "^1.2.1",
+    "@types/dotenv": "^4.0.2",
+    "@types/express": "^4.11.1",
+    "@types/mocha": "^5.0.0",
+    "@types/morgan": "^1.7.35",
+    "@types/multer": "^1.3.6",
+    "@types/randomstring": "^1.1.6",
+    "@types/request-promise": "^4.1.41",
+    "@types/sinon": "^4.3.1",
+    "@types/supertest": "^2.0.4",
+    "@types/umzug": "^2.1.1",
+    "@types/uuid": "^3.4.3",
+    "chai": "^4.1.2",
+    "colors": "^1.2.1",
+    "faker": "^4.1.0",
+    "mocha": "^5.0.5",
+    "nyc": "^11.6.0",
+    "pre-commit": "^1.2.2",
+    "randomstring": "^1.1.5",
+    "supertest": "^3.0.0",
+    "tslint": "^5.9.1",
+    "yarn": "^1.17.3"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "all": false,
+    "exclude": [
+      "src/tests/**",
+      "src/ioc.ts",
+      "src/setup/**",
+      "src/config/SQLDbConnection.ts",
+      "src/models/*Model.ts",
+      "src/repositories/sql/entities/**"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text",
+      "text-summary",
+      "html"
+    ]
+  }
+}

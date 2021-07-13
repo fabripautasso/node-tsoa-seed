@@ -1,0 +1,60 @@
+{
+  "entryFile": "./src/controllers/index.ts",
+  "spec": {
+    "specMerging": "recursive",
+    "outputDirectory": "./build/swagger",
+    "spec": {
+      "paths": {
+        "/files/download": {
+          "post": {
+            "produces": [
+              "image/png"
+            ],
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "/files/upload": {
+          "post": {
+            "consumes": [
+              "multipart/form-data"
+            ],
+            "parameters": [
+              {
+                "in": "formData",
+                "name": "tsoaUploadFile",
+                "required": true,
+                "type": "file"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "tags":[
+    {
+      "name": "User",
+      "description": "Operations about users",
+      "externalDocs": {
+        "description": "Find out more about users",
+        "url": "http://swagger.io"
+      }
+    }
+  ]
+  ,
+  "routes": {
+    "routesDir": "./build",
+    "basePath": "/service/",
+    "authenticationModule": "./src/auth.ts",
+    "middleware": "express",
+    "iocModule": "./src/ioc"
+  }
+}
